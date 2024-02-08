@@ -25,7 +25,9 @@ result(d=data, t=times, size=size, p=prediction, tirage=1)
 
 # DocString
 
+```py
 result(d:dict[int, int], t:int, size:int, p:list[int], tirage:int=1):
+```
 
 * `data` - A dict of all the data and their repartition in the DataFrame
 * `t` - The number of value in the DataFrame
