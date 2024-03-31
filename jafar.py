@@ -3,7 +3,7 @@ from itertools import product;
 import pandas as pd;
 
 # Fonction principale
-def predire(csv:str, col:list[str], *, prediction:list[int]):
+def predire(csv:str, col:list[str], *, prediction:list[int]) -> int:
     return result(*lecture_csv(csv=csv, col=col), prediction=prediction)
 
 # Fonctions secondaires
