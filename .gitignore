@@ -1,1 +1,17 @@
-loto_201911.csv
+# Retirer les différents set de données
+*.csv
+
+# Retirer les fichiers de sauvegarde
+*~
+
+# Retirer les fichiers de cache
+__pycache__/
+
+# Retirer les notebooks
+*.ipynb
+
+# Retirer les fichiers de resultat
+.txt
+
+# Retirer les fichiers de configuration
+main.py
