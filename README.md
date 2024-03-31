@@ -3,7 +3,7 @@ A python module that will reduce the Standard Deviation of a dataset to approach
 
 # Définition
 ```py
-def result(d:dict[int, int], t:int, size:int, p:list[int], tirage:int=1) -> list[Any, float]:
+def predire(csv:str, col:list[str], *, prediction:list[int]) -> int
 ```
 
 # Usage
