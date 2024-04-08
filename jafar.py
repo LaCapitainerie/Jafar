@@ -1,5 +1,5 @@
 from collections import Counter;
-from itertools import product;
+from itertools import permutations;
 import pandas as pd;
 
 # Fonction principale
@@ -18,9 +18,10 @@ def lecture_csv(csv:str, col:list[str]) -> tuple[Counter, int, int, int]:
     # Comptage des boules
     boule = Counter()
     for each in col:
-        boule += Counter(df[each])
+        # Counter of each column sorted
+        boule += Counter(df[each].sort_values())
 
-    return boule, sum(boule.values()), len(boule.keys()), len(col)
+    return boule, boule.total(), len(boule.keys()), len(col)
 
 # Fonctions de calcul
 def moy_a_16(d:Counter, t:int, size:int) -> int:
@@ -36,7 +37,7 @@ def ecart_type(d:Counter, t:int, size:int, col_len:int) -> dict[tuple[int, ...],
     values_already_seen:set = set()
 
     # Calcul des combinaisons
-    for each in product(d, repeat=col_len):
+    for each in permutations(d, r=col_len):
         print(each, end="\r", )
         if (eachTuple := tuple(sorted(each))) not in values_already_seen:
             values_already_seen.add(each)
@@ -45,7 +46,8 @@ def ecart_type(d:Counter, t:int, size:int, col_len:int) -> dict[tuple[int, ...],
     return percent
 
 # Fonction de résultat
-def result(d:dict[int, int], t:int, size:int, tirage:int, *, prediction:list[int]) -> int:
+def result(d:Counter[int, int], t:int, size:int, tirage:int, *, prediction:list[int]) -> int:
+
     # Retourne la liste triée des écarts types
     s = sorted(ecart_type(d, t, size, tirage).items(), key=lambda x: x[1])
     prediction:tuple[int] = tuple(sorted(prediction))
