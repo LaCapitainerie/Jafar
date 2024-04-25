@@ -3,7 +3,7 @@ Importation des modules nécessaires
 """
 from collections import Counter
 from itertools import permutations
-import pandas as pd
+import panda as pd
 
 def predire(csv:str, col:list[str], *, prediction:list[int]) -> int:
     """
