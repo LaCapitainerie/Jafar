@@ -11,7 +11,7 @@ __pycache__/
 *.ipynb
 
 # Retirer les fichiers de resultat
-.txt
+*.txt
 
 # Retirer les fichiers de configuration
 main.py
