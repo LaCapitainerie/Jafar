@@ -1,4 +1,7 @@
-from jafar import predire;
+"""
+Importation de la fonction predire du module jafar
+"""
+from jafar import predire
 
 # Liste des nombres à trouver
 prediction:list[int] = [3]
