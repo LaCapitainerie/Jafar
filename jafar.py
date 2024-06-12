@@ -2,8 +2,8 @@
 Importation des modules nécessaires
 """
 from collections import Counter
-from itertools import permutations
-import panda as pd
+from itertools import combinations
+import pandas as pd
 
 def predire(csv:str, col:list[str], *, prediction:list[int]) -> int:
     """
@@ -34,7 +34,7 @@ def lecture_csv(csv:str, col:list[str]) -> tuple[Counter, int, int, int]:
     boule = Counter()
     for each in col:
         # Counter of each column sorted
-        boule += Counter(df[each].sort_values())
+        boule += Counter(df[each])
 
     return boule, boule.total(), len(boule.keys()), len(col)
 
@@ -63,15 +63,9 @@ def ecart_type(d:Counter, t:int, size:int, col_len:int) -> dict[tuple[int, ...],
     # Dictionnaire des combinaisons et leur pourcentage
     percent:dict[int, int] = {}
 
-    # Liste des combinaisons déjà vues
-    values_already_seen:set = set()
-
     # Calcul des combinaisons
-    for each in permutations(d, r=col_len):
-        print(each, end="\r", )
-        if (each_tuple := tuple(sorted(each))) not in values_already_seen:
-            values_already_seen.add(each)
-            percent[each_tuple] = moy_a_16(d + Counter(each_tuple), t+1, size)
+    for each in combinations(d, r=col_len):
+        percent[each] = moy_a_16(d + Counter(each), t+1, size)
 
     return percent
 
@@ -93,11 +87,9 @@ def result(d:Counter[int, int], t:int, size:int, tirage:int, *, prediction:list[
 
     # Ecriture dans un fichier
     with open("result.txt", "w", encoding="utf8") as f:
-        for each, _ in s:
+        for each, pred in s[:10]:
             f.write(f"{each} : {'X' if each == prediction else ''}\n")
-
-    # Print avec couleur
-    for each, pred in s:
-        print("\33[42m" if each == prediction else "\33[0m", each, pred)
+            print("\33[42m" if each == prediction else "\33[0m", each, pred)
+        
 
     return 0
