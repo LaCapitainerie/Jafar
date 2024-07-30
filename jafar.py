@@ -61,11 +61,10 @@ def ecart_type(d:Counter, t:int, size:int, col_len:int) -> dict[tuple[int, ...],
     :return: dict[tuple[int, ...], int]
     """
     # Dictionnaire des combinaisons et leur pourcentage
-    percent:dict[int, int] = {}
-
-    # Calcul des combinaisons
-    for each in combinations(d, r=col_len):
-        percent[each] = moy_a_16(d + Counter(each), t+1, size)
+    percent:dict[int, int] = {
+        each:
+        moy_a_16(d + Counter(each), t+1, size) for each in combinations(d, r=col_len)
+    }
 
     return percent
 
