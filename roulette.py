@@ -1,11 +1,8 @@
-
 import matplotlib.pyplot as plt
 import random
 from typing import Literal
 
 wining_choice_type = Literal['green', 'red', 'black', 'low', 'high', 'even', 'odd', '1st 12', '2nd 12', '3rd 12', '1 to 18', '19 to 36', '1st column', '2nd column', '3rd column', 'street', '2 to 1 1', '2 to 1 2', '2 to 1 3', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
-
-# This function returns a list of the winning choices in a roulette game
 
 def roulette():
 
@@ -56,21 +53,22 @@ def roulette():
     
     return wining_choice
 
-def show_stat(data:list[int]) -> None:
+def show_stat(data:list[int], nb_tirages:int, début:int) -> None:
     median = sorted(data)[len(data)//2]
 
     plt.scatter(range(len(data)), data, color='blue', label='Gain Finaux')
 
     plt.axhline(y=median, color='red', linestyle='--', label=f'Gain Median: {median:.2f}')
+    
+    plt.axhline(y=début, color='red', linestyle='--', label=f'Départ: {début:.2f}')
 
-    plt.title('Gain Finaux Espimées en Fonction des Tirages')
+    plt.title('Gain Finaux Estimées en {} Tours'.format(nb_tirages))
     plt.xlabel('Parties')
     plt.ylabel('Gain Finaux')
 
     plt.legend()
 
     plt.show()
-
 
 def main(tirages = 50):
 
@@ -139,7 +137,7 @@ def main(tirages = 50):
 
     bet:list[wining_choice_type] = '1st 12', '2nd 12'
 
-    fois = 10
+    fois = 15
 
     values = []
     for _ in range(tirages):
@@ -155,56 +153,20 @@ def main(tirages = 50):
                 stats[choice] += 1
 
             if any(_ in choices for _ in bet):
-                # print("Mise :", round(bet_percent * money * len(bet)), "Gagné :", round(bet_percent * money * (bet_win_percent - len(bet))))
                 money -= round(bet_percent * money)
                 money += round(bet_percent * money * bet_win_percent)
             else:
-                # print("Mise :", round(bet_percent * money * len(bet)), "Perdu")
                 money -= round(bet_percent * money)
 
             # Random
             # bet = [random.choice(["1st 12", '2nd 12', "3rd 12"]) for _ in range(2)]
 
             # Non Sortis
-            bet = list({'1st 12', '2nd 12', '3rd 12'} ^ ({'1st 12', '2nd 12', '3rd 12'} & set(choices)))
-            print(bet, choices)
+            # bet = list({'1st 12', '2nd 12', '3rd 12'} ^ ({'1st 12', '2nd 12', '3rd 12'} & set(choices)))
 
         values.append(money)
 
+    show_stat(values, fois, 100)
 
-    def barre(stat:int, maximum:int = 100, nb_tirages:int = 100):
-        return round(stat/nb_tirages*maximum)*"#" + (maximum - round(stat/nb_tirages*maximum))*"-"
-    
-    # print("Min :", min(values), "Moyenne :", sum(values)/len(values), "Max :", max(values))
-    # # print("0 - [", barre(sum(values), nb_tirages=len(values)), "] -", max(values))
-
-    # # Odd Even
-    # print("Even - [", barre(stats["even"], tirages*fois), "] - Odd")
-
-    # # Low High
-    # print("Low  - [", barre(stats["low"], tirages*fois), "] - High")
-
-    # # Red Black
-    # print("Red  - [", barre(stats["red"], tirages*fois), "] - Black")
-
-    # 1st 12 2nd 12 3rd 12
-    # print("1st 12 - [", barre(stats["1st 12"]), "] - 2nd 12 - [", barre(stats["2nd 12"]), "] - 3rd 12")
-
-    # # 1 to 18 19 to 36
-    # print("1 to 18 - [", barre(stats["1 to 18"]), "] - 19 to 36")
-
-    # # 2 to 1 1 2 to 1 2 2 to 1 3
-    # print("2 to 1 1 - [", barre(stats["2 to 1 1"]), "] - 2 to 1 2 - [", barre(stats["2 to 1 2"]), "] - 2 to 1 3")
-
-    # 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36
-    # print("0    - [", barre(sum(_ * stats[_] for _ in range(37))/36, nb_tirages=tirages*fois), "] - 36")
-
-
-
-
-    show_stat(values)
-
-
-
-main()
-
+if __name__ == '__main__':
+    main(1000)
