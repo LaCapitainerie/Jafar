@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import random
-from typing import Literal
+from typing import Literal, Sequence
 
 wining_choice_type = Literal['green', 'red', 'black', 'low', 'high', 'even', 'odd', '1st 12', '2nd 12', '3rd 12', '1 to 18', '19 to 36', '1st column', '2nd column', '3rd column', 'street', '2 to 1 1', '2 to 1 2', '2 to 1 3', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
 
@@ -55,12 +55,15 @@ def roulette():
 
 def show_stat(data:list[int], nb_tirages:int, début:int) -> None:
     median = sorted(data)[len(data)//2]
+    moy = sum(data) / len(data)
 
     plt.scatter(range(len(data)), data, color='blue', label='Gain Finaux')
 
-    plt.axhline(y=median, color='red', linestyle='--', label=f'Gain Median: {median:.2f}')
+    plt.axhline(y=moy, color='red', linestyle='--', label=f'Gain Moyen: {moy:.2f}')
+
+    plt.axhline(y=median, color='red', linestyle=':', label=f'Gain Median: {median:.2f}')
     
-    plt.axhline(y=début, color='red', linestyle='--', label=f'Départ: {début:.2f}')
+    plt.axhline(y=début, color='green', linestyle='-', label=f'Départ: {début:.2f}')
 
     plt.title('Gain Finaux Estimées en {} Tours'.format(nb_tirages))
     plt.xlabel('Parties')
@@ -70,7 +73,7 @@ def show_stat(data:list[int], nb_tirages:int, début:int) -> None:
 
     plt.show()
 
-def main(tirages = 50):
+def main(tirages = 50, tour = 15, money = 100, mise = 1/6):
 
     stats = {
         'green': 0,
@@ -131,32 +134,35 @@ def main(tirages = 50):
         36: 0
     }
 
-    money = 100
-    bet_percent = 1/6
-    bet_win_percent = 3
+    bet_percent = mise
+    bet_win_percent = 3/2
 
-    bet:list[wining_choice_type] = '1st 12', '2nd 12'
-
-    fois = 15
+    bet:Sequence[wining_choice_type] = '1st 12', '2nd 12'
 
     values = []
     for _ in range(tirages):
-        money = 100
-        for _ in range(fois):
+        current_money = money
+        for _ in range(tour):
 
-            if money <= 5:
+            print("Tour", _, "Argent:", current_money)
+
+            if current_money <= 5:
                 print("Vous n'avez plus d'argent, arrêt du jeu au tour", _)
                 break
 
             choices = roulette()
             for choice in choices:
                 stats[choice] += 1
+            
+            betted = (round(bet_percent * current_money * len(bet)))
+
+            print("Retrait de la mise", betted, "Choix:", bet)
+            current_money -= round(bet_percent * current_money * len(bet))
 
             if any(_ in choices for _ in bet):
-                money -= round(bet_percent * money)
-                money += round(bet_percent * money * bet_win_percent)
-            else:
-                money -= round(bet_percent * money)
+
+                print("Ajout du gain", betted * bet_win_percent)
+                current_money += round(betted * bet_win_percent)
 
             # Random
             # bet = [random.choice(["1st 12", '2nd 12', "3rd 12"]) for _ in range(2)]
@@ -164,9 +170,14 @@ def main(tirages = 50):
             # Non Sortis
             # bet = list({'1st 12', '2nd 12', '3rd 12'} ^ ({'1st 12', '2nd 12', '3rd 12'} & set(choices)))
 
-        values.append(money)
+        values.append(current_money)
 
-    show_stat(values, fois, 100)
+    show_stat(values, tour, money)
 
 if __name__ == '__main__':
-    main(1000)
+    main(
+        tirages=100,
+        tour=50,
+        money=1000,
+        mise=1/10
+    )
